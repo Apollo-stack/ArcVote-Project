@@ -18,9 +18,9 @@ contract ArcVote {
 
     constructor (){
         // Criando os candidatos iniciais
-        candidatos.push(Candidato("Bitcoin", 0));
-        candidatos.push(Candidato("Ethereum", 0));
-        candidatos.push(Candidato("Solana", 0));
+        candidatos.push(Candidato("ArcToken", 0));
+        candidatos.push(Candidato("Matic", 0));
+        candidatos.push(Candidato("PolkaDot", 0));
         candidatos.push(Candidato("USDC", 0));
     }
 
