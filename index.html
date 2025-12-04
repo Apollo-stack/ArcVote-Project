@@ -76,7 +76,7 @@
             try {
 
                 //verifica quantos candidatos tem na lista
-                const amountBigInt = await contract.candidatesCount();
+                const amountBigInt = await contract.getCandidatesCount();
                 const amount = Number(amountBigInt); //converte para número normal
 
                 let html = "";
