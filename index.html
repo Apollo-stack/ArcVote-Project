@@ -56,11 +56,8 @@
                     signer = await provider.getSigner();
                     const address = await signer.getAddress();
                     
-                    <div class="header-buttons">
-                        <button id="connectBtn" class="btn-connect" onclick="connectWallet()">Connect MetaMask</button>
-    
-                        <button id="disconnectBtn" class="btn-disconnect" onclick="disconnectWallet()">Disconnect</button>
-                    </div>
+                    document.getElementById("connectBtn").style.display = "none";
+                    document.getElementById("disconnectBtn").style.display = "block";
 
                     document.getElementById("walletAddress").innerText = "Connected as: " + address.substring(0,6) + "..." + address.substring(38);
                     
