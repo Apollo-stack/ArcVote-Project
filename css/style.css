@@ -79,4 +79,13 @@ h1 {
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } 
 
 }
-   
+ 
+.total{
+    margin-top: 20px; 
+    padding: 15px; 
+    background-color: #bdbaba; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    color: #333;
+}
+
