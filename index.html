@@ -26,7 +26,7 @@
     <script>
         // CONFIGURAÇÃO 
         
-        const CONTRACT_ADDRESS = "0x0C722a97186A06c7b66d1A2beb492C52e48378B2"; 
+        const CONTRACT_ADDRESS = "0x50b9eD83D4d0e36157042feb71Fc8ECe3dD55422"; 
         
         const ABI = [
             "function votar(uint256 _candidatoIndex) public",
@@ -47,7 +47,7 @@
                     // Pede permissão para acessar a MetaMask
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     
-                    // Configura a conexão (Ethers v6)
+                    // Configura a conexão 
                     provider = new ethers.BrowserProvider(window.ethereum);
                     signer = await provider.getSigner();
                     const address = await signer.getAddress();
@@ -82,14 +82,14 @@
                 let html = "";
                 let totalVotosGeral = 0; // Variável para somar tudo
 
-                // O LOOP FLEXÍVEL: Agora vai de 0 até a "quantidade" exata
+                
                 for(let i = 0; i < quantidade; i++) {
                     const candidato = await contract.candidatos(i);
                     
                     const nome = candidato[0];
                     const votos = Number(candidato[1]); // Converte votos para número JS
 
-                    // Soma ao total geral
+                    
                     totalVotosGeral += votos;
                     
                     html += `
@@ -105,10 +105,10 @@
                     `;
                 }
                 
-                // Adiciona o Total de Votos no final da lista HTML
                 html += `
-                    <div class="total">
-                        📊 Total de Votos na Rede: <span style="font-size: 1.4em; color: #4CAF50;">${totalVotosGeral}</span>
+                    <div class="total-card">
+                        <span>📊 Total de Votos na Rede:</span>
+                        <span class="total-number">${totalVotosGeral}</span>
                     </div>
                 `;
                 
@@ -140,7 +140,7 @@
 
             } catch (error) {
                 console.error(error);
-                // Tratamento de erro simples para quando o usuário já votou
+                
                 if(error.message.includes("Voce ja votou")) {
                     statusDiv.innerHTML = "<span style='color:red'> Você já gastou seu voto!</span>";
                 } else {

@@ -15,12 +15,12 @@ contract ArcVote {
     event votoComputado(address eleitor, string nomeCandidato);
 
     constructor (){
-        // Pode adicionar ou remover quantos quiser aqui agora!
-        candidatos.push(Candidato("ArcToken", 0));
-        candidatos.push(Candidato("Matic", 0));
-        candidatos.push(Candidato("PolkaDot", 0));
-        candidatos.push(Candidato("USDC", 0));
-        candidatos.push(Candidato("Bitcoin", 0)); // Exemplo novo
+
+        candidatos.push(Candidato("USDC (Circle)", 0));
+        candidatos.push(Candidato("EURC (Euro)", 0));
+        candidatos.push(Candidato("Arc Native Token", 0));
+        candidatos.push(Candidato("Wrapped BTC", 0));
+        candidatos.push(Candidato("Wrapped ETH", 0));
     }
 
     function votar (uint256 _candidatoIndex) public {
@@ -33,8 +33,7 @@ contract ArcVote {
         emit votoComputado(msg.sender, candidatos[_candidatoIndex].nome);
     }
 
-    // --- NOVA FUNÇÃO ---
-    // Essa função permite o site descobrir o tamanho da lista (length)
+    
     function contarCandidatos() public view returns (uint256) {
         return candidatos.length;
     }
