@@ -52,8 +52,10 @@
                     signer = await provider.getSigner();
                     const address = await signer.getAddress();
                     
-                    document.getElementById("connectBtn").style.display = "none";
-                    document.getElementById("disconnectBtn").style.display = "block";
+                    <div class="header-buttons">
+                        document.getElementById("connectBtn").style.display = "none";
+                        document.getElementById("disconnectBtn").style.display = "block";
+                    </div>
 
                     document.getElementById("walletAddress").innerText = "Connected as: " + address.substring(0,6) + "..." + address.substring(38);
                     
