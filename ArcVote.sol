@@ -27,9 +27,9 @@ contract ArcVote {
     function votar (uint256 _candidatoIndex) public {
         
         // CORREÇÃO 1: 'jaVotou' deve ser igualzinho ao declarado lá em cima
-        require(!jaVotou[msg.sender], "Voce ja votou!"); 
+        require(!jaVotou[msg.sender], "Apenas um voto por carteira!"); 
 
-        require(_candidatoIndex < candidatos.length, "Candidato invalido.");
+        require(_candidatoIndex < candidatos.length, "Token invalido.");
 
         // Atualizando os dados
         jaVotou[msg.sender] = true;
