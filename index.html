@@ -14,7 +14,11 @@
         <h1>🪙 ArcVote System</h1>
         <p>Vote for your favorite coin on the Arc Testnet network.</p>
         
-        <button id="connectBtn" class="btn-connect" onclick="connectWallet()">Connect MetaMask</button>
+        <div class="header-buttons">
+            <button id="connectBtn" class="btn-connect" onclick="connectWallet()">Connect MetaMask</button>
+            <button id="disconnectBtn" class="btn-disconnect" onclick="disconnectWallet()">Disconnect</button>
+        </div>
+
         <p id="walletAddress" style="font-size: 12px; color: #252525;">Wallet not connected</p>
 
         <div id="candidatesList">
