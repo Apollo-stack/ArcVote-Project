@@ -1,0 +1,81 @@
+body { 
+    font-family: 'Arial', sans-serif; 
+    background-color: #90b6ef; 
+    text-align: center; 
+    padding: 20px; 
+}
+
+.container { 
+    max-width: 600px; 
+    margin: 0 auto; 
+    background: rgb(233, 233, 244); 
+    padding: 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+}
+
+h1 { 
+    color: #020d7f; 
+}
+
+.btn-connect { 
+    background-color: #49a347; 
+    color: rgb(255, 255, 255); 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-bottom: 20px; 
+}
+
+.btn-connect:hover { 
+    background-color: #05660f; 
+}
+
+.candidate-card { 
+    border: 1px solid #ddd; 
+    padding: 15px; 
+    margin: 10px 0; 
+    border-radius: 8px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.btn-vote { 
+    background-color: #008CBA; 
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+.btn-vote:disabled { 
+    background-color: #ccc; 
+    cursor: not-allowed; 
+}
+
+#status { 
+    margin-top: 20px; 
+    font-weight: bold; 
+    color: #666; 
+}
+
+.loader { 
+    border: 4px solid #f3f3f3; 
+    border-top: 4px solid #3498db; 
+    border-radius: 50%; width: 20px; 
+    height: 20px; 
+    animation: spin 2s linear infinite; 
+    display: inline-block; 
+    vertical-align: middle; 
+    margin-right: 10px; 
+    display: none;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } 
+
+}
+   
