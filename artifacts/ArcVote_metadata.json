@@ -16,17 +16,17 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "eleitor",
+						"name": "voter",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "string",
-						"name": "nomeCandidato",
+						"name": "candidateName",
 						"type": "string"
 					}
 				],
-				"name": "votoComputado",
+				"name": "VoteConfirmed",
 				"type": "event"
 			},
 			{
@@ -37,16 +37,16 @@
 						"type": "uint256"
 					}
 				],
-				"name": "candidatos",
+				"name": "candidates",
 				"outputs": [
 					{
 						"internalType": "string",
-						"name": "nome",
+						"name": "name",
 						"type": "string"
 					},
 					{
 						"internalType": "uint256",
-						"name": "contaVotos",
+						"name": "voteCount",
 						"type": "uint256"
 					}
 				],
@@ -55,7 +55,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "contarCandidatos",
+				"name": "getCandidatesCount",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -74,7 +74,7 @@
 						"type": "address"
 					}
 				],
-				"name": "jaVotou",
+				"name": "hasVoted",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -89,11 +89,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_candidatoIndex",
+						"name": "_candidateIndex",
 						"type": "uint256"
 					}
 				],
-				"name": "votar",
+				"name": "vote",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -127,11 +127,11 @@
 	},
 	"sources": {
 		"ArcVote.sol": {
-			"keccak256": "0x2f97988b9cea651fcc68c344d16cf5b91c076f0129abfd1f2bcf6a4f9e76c49f",
+			"keccak256": "0x0275faed6f52653fdffde45e83708f6f3ce043743a13403796a6e828998d816f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6d41e0f8793375cf091adc5ba957f379eda2636d8dcd2fef0d337252006cd4ed",
-				"dweb:/ipfs/QmNZX4uWgr1VAJrLsaoCMabmXhc15URedptapGRf3hb8Ve"
+				"bzz-raw://64ad909277cf4a07c09bdd3ab15c1544fb40218217c3898212af30aed8001b55",
+				"dweb:/ipfs/QmWACuwY96KrAMGLQApvyZeES8K7FUKvd5py8gjB1mhfUT"
 			]
 		}
 	},

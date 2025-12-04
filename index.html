@@ -1,105 +1,104 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcVote - Votação Descentralizada</title>
+    <title>ArcVote - Decentralized Voting</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-    <link  href="css/style.css" rel="stylesheet">
+    <link  rel="stylesheet" href="css/style.css" >
 </head>
+
 <body>
 
     <div class="container">
         <h1>🪙 ArcVote System</h1>
-        <p>Vote na sua moeda favorita na rede Arc Testnet</p>
+        <p>Vote for your favorite coin on the Arc Testnet network.</p>
         
-        <button id="connectBtn" class="btn-connect" onclick="conectarCarteira()">Conectar MetaMask</button>
-        <p id="walletAddress" style="font-size: 12px; color: #252525;">Carteira não conectada</p>
+        <button id="connectBtn" class="btn-connect" onclick="connectWallet()">Connect MetaMask</button>
+        <p id="walletAddress" style="font-size: 12px; color: #252525;">Wallet bot connected</p>
 
         <div id="candidatesList">
-            <p>Conecte sua carteira para ver os candidatos...</p>
+            <p>Connect your wallet to view the candidates...</p>
         </div>
 
         <div id="status"></div>
     </div>
 
     <script>
-        // CONFIGURAÇÃO 
-        
-        const CONTRACT_ADDRESS = "0x50b9eD83D4d0e36157042feb71Fc8ECe3dD55422"; 
+        //configurações 
+        const CONTRACT_ADDRESS = "0x0563aa9E371daeEf083d82b30E997CdAed2E467B"; 
         
         const ABI = [
-            "function votar(uint256 _candidatoIndex) public",
-            "function candidatos(uint256) view returns (string name, uint256 voteCount)",
-            "function jaVotou(address) view returns (bool)",
-            "function contarCandidatos() view returns (uint256)", 
-            "event votoComputado(address eleitor, string nomeCandidato)"
+            "function vote(uint256 _candidateIndex) public",
+            "function candidates(uint256) view returns (string name, uint256 voteCount)",
+            "function hasVoted(address) view returns (bool)",
+            "function getCandidatesCount() view returns (uint256)", 
+            "event VoteConfirmed(address voter, string candidateName)"
         ];
 
-        // Variáveis globais
+        //variáveis globais
         let provider, signer, contract;
 
-        // --- FUNÇÕES ---
-
-        async function conectarCarteira() {
+        //funções
+        async function connectWallet() {
             if (window.ethereum) {
                 try {
-                    // Pede permissão para acessar a MetaMask
+
+                    //permissão para acessar a MetaMask
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     
-                    // Configura a conexão 
+                    //configura a conexão 
                     provider = new ethers.BrowserProvider(window.ethereum);
                     signer = await provider.getSigner();
                     const address = await signer.getAddress();
                     
-                    document.getElementById("connectBtn").innerText = "Conectado";
-                    document.getElementById("walletAddress").innerText = "Conectado como: " + address.substring(0,6) + "..." + address.substring(38);
+                    document.getElementById("connectBtn").innerText = "Connected";
+                    document.getElementById("walletAddress").innerText = "Connected as: " + address.substring(0,6) + "..." + address.substring(38);
                     
-                    // Conecta com o contrato
+                    //conecta com o contrato
                     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-                    
-                    carregarCandidatos();
+                    loadCandidates();
 
                 } catch (error) {
                     console.error(error);
-                    alert("Erro ao conectar: " + error.message);
+                    alert("Erro connecting: " + error.message);
                 }
             } else {
-                alert("Instale a MetaMask!");
+                alert("Install MetaMask!");
             }
         }
 
 
-        async function carregarCandidatos() {
+        async function loadCandidates() {
             const listaDiv = document.getElementById("candidatesList");
-            listaDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Carregando dados...";
+            listaDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Loading date...";
 
             try {
-                // Pergunta ao contrato: "Quantos candidatos tem na lista?"
-                const quantidadeBigInt = await contract.contarCandidatos();
-                const quantidade = Number(quantidadeBigInt); // Converte para número normal
+
+                //verifica quantos candidatos tem na lista
+                const amountBigInt = await contract.candidatesCount();
+                const amount = Number(amountBigInt); //converte para número normal
 
                 let html = "";
-                let totalVotosGeral = 0; // Variável para somar tudo
-
+                let totalVotesOverall = 0; 
                 
-                for(let i = 0; i < quantidade; i++) {
-                    const candidato = await contract.candidatos(i);
+                for(let i = 0; i < amount; i++) {
+                    const candidate = await contract.candidate(i);
                     
-                    const nome = candidato[0];
-                    const votos = Number(candidato[1]); // Converte votos para número JS
+                    const name = candidate[0];
+                    const votes = Number(candidate[1]); //converte votos para número JS
 
                     
-                    totalVotosGeral += votos;
+                    totalVotesOverall += votes;
                     
                     html += `
                         <div class="candidate-card">
                             <div>
-                                <strong>${nome}</strong>
+                                <strong>${name}</strong>
                             </div>
                             <div>
-                                <span style="font-size: 1.2em; margin-right: 15px;">${votos} votos</span>
-                                <button class="btn-vote" onclick="votar(${i})">Votar</button>
+                                <span style="font-size: 1.2em; margin-right: 15px;">${votes} votes</span>
+                                <button class="btn-vote" onclick="vote(${i})">Vote</button>
                             </div>
                         </div>
                     `;
@@ -107,44 +106,44 @@
                 
                 html += `
                     <div class="total-card">
-                        <span>📊 Total de Votos na Rede:</span>
-                        <span class="total-number">${totalVotosGeral}</span>
+                        <span>📊 Total Votes on the Network:</span>
+                        <span class="total-number">${totalVotesOverall}</span>
                     </div>
                 `;
                 
                 listaDiv.innerHTML = html;
 
             } catch (error) {
-                listaDiv.innerHTML = "<p style='color:red'>Erro ao ler contrato. Verifique rede e endereço.</p>";
+                listaDiv.innerHTML = "<p style='color:red'>Error reading contract. Check network and address..</p>";
                 console.error(error);
             }
         }
 
-        async function votar(index) {
+        async function vote(index) {
             const statusDiv = document.getElementById("status");
-            statusDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Enviando transação para a Arc... (Confirme na MetaMask)";
+            statusDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Sending transaction to Arc... (Confirm in MetaMask)";
             
             try {
-                // Chama a função votar do contrato
-                const tx = await contract.votar(index);
+                //chama a função vote do contrato
+                const tx = await contract.vote(index);
                 
-                statusDiv.innerHTML = "Transação enviada! Aguardando confirmação da rede...";
+                statusDiv.innerHTML = "Transaction sent! Awaiting network confirmation...";
                 
-                // Espera a transação ser minerada
+                //espera a transação ser minerada
                 await tx.wait();
                 
-                statusDiv.innerHTML = "<span style='color:green'>✅ Voto confirmado com sucesso!</span>";
+                statusDiv.innerHTML = "<span style='color:green'>✅ Vote successfully confirmed.!</span>";
                 
-                // Recarrega a lista para mostrar o novo voto
-                carregarCandidatos();
+                //recarrega a lista para mostrar o novo voto
+                loadCandidates();
 
             } catch (error) {
                 console.error(error);
                 
-                if(error.message.includes("Voce ja votou")) {
-                    statusDiv.innerHTML = "<span style='color:red'> Você já gastou seu voto!</span>";
+                if(error.message.includes("You've already voted!")) {
+                    statusDiv.innerHTML = "<span style='color:red'> You've already used your vote!</span>";
                 } else {
-                    statusDiv.innerHTML = "<span style='color:red'>Erro ao votar. (Veja o console F12)</span>";
+                    statusDiv.innerHTML = "<span style='color:red'>Voting error. (See F12 console)</span>";
                 }
             }
         }

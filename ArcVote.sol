@@ -3,38 +3,43 @@ pragma solidity 0.8.19;
 
 contract ArcVote {
 
-    struct Candidato {
-        string nome;
-        uint256 contaVotos; 
+    struct Candidate {
+        string name;
+        uint256 voteCount; 
     }
 
-    Candidato[] public candidatos; 
+    Candidate[] public candidates; 
     
-    mapping (address => bool) public jaVotou;
+    mapping (address => bool) public hasVoted;
     
-    event votoComputado(address eleitor, string nomeCandidato);
+    //necessario para atualizar o site
+    event VoteConfirmed (address voter, string candidateName);
 
     constructor (){
 
-        candidatos.push(Candidato("USDC (Circle)", 0));
-        candidatos.push(Candidato("EURC (Euro)", 0));
-        candidatos.push(Candidato("Arc Native Token", 0));
-        candidatos.push(Candidato("Wrapped BTC", 0));
-        candidatos.push(Candidato("Wrapped ETH", 0));
+        candidates.push(Candidate("USDC (Circle)", 0));
+        candidates.push(Candidate("EURC (Euro)", 0));
+        candidates.push(Candidate("Arc Native Token", 0));
+        candidates.push(Candidate("Wrapped BTC", 0));
+        candidates.push(Candidate("Wrapped ETH", 0));
     }
 
-    function votar (uint256 _candidatoIndex) public {
-        require(!jaVotou[msg.sender], "Apenas um voto por carteira!");
-        require(_candidatoIndex < candidatos.length, "Token invalido.");
+    function vote (uint256 _candidateIndex) public {
 
-        jaVotou[msg.sender] = true;
-        candidatos[_candidatoIndex].contaVotos += 1; 
+        require(!hasVoted[msg.sender], "You have already voted!");
 
-        emit votoComputado(msg.sender, candidatos[_candidatoIndex].nome);
+        //verifica se o ID existe
+        require(_candidateIndex < candidates.length, "Invalid Candidate.");
+
+        //gravar o voto
+        hasVoted[msg.sender] = true;
+        candidates[_candidateIndex].voteCount += 1; 
+
+        emit VoteConfirmed(msg.sender, candidates[_candidateIndex].name);
     }
 
     
-    function contarCandidatos() public view returns (uint256) {
-        return candidatos.length;
+    function getCandidatesCount() public view returns (uint256) {
+        return candidates.length;
     }
 }
