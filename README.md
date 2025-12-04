@@ -23,7 +23,7 @@ It allows users to cast votes for their favorite assets in a transparent, immuta
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/SEU_USUARIO/ArcVote-Project.git](https://github.com/SEU_USUARIO/ArcVote-Project.git)
+   git clone https://github.com/Apollo-stack/ArcVote-Project.git
    
 2. Open the folder and start a local server (using Python):
    ```bash
