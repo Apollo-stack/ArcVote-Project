@@ -32,7 +32,7 @@
             "function votar(uint256 _candidatoIndex) public",
             "function candidatos(uint256) view returns (string name, uint256 voteCount)",
             "function jaVotou(address) view returns (bool)",
-            "function contarCandidatos() view returns (uint256)", // <--- ADICIONAMOS ISSO
+            "function contarCandidatos() view returns (uint256)", 
             "event votoComputado(address eleitor, string nomeCandidato)"
         ];
 
@@ -40,6 +40,35 @@
         let provider, signer, contract;
 
         // --- FUNÇÕES ---
+
+        async function conectarCarteira() {
+            if (window.ethereum) {
+                try {
+                    // Pede permissão para acessar a MetaMask
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    
+                    // Configura a conexão (Ethers v6)
+                    provider = new ethers.BrowserProvider(window.ethereum);
+                    signer = await provider.getSigner();
+                    const address = await signer.getAddress();
+                    
+                    document.getElementById("connectBtn").innerText = "Conectado";
+                    document.getElementById("walletAddress").innerText = "Conectado como: " + address.substring(0,6) + "..." + address.substring(38);
+                    
+                    // Conecta com o contrato
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+                    
+                    carregarCandidatos();
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Erro ao conectar: " + error.message);
+                }
+            } else {
+                alert("Instale a MetaMask!");
+            }
+        }
+
 
         async function carregarCandidatos() {
             const listaDiv = document.getElementById("candidatesList");
