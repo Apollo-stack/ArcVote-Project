@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.19; // Versão segura para evitar erros de Gas
+
+contract ArcVote {
+
+    struct Candidato {
+        string nome;  
+        uint256 contaVotos; 
+    }
+
+    Candidato[] public candidatos; 
+    
+    // Atenção: A variável começa com 'j' minúsculo, mas o V é maiúsculo (padrão camelCase)
+    mapping (address => bool) public jaVotou; 
+
+    // Evento para avisar o site
+    event votoComputado(address eleitor, string nomeCandidato);
+
+    constructor (){
+        // Criando os candidatos iniciais
+        candidatos.push(Candidato("Bitcoin", 0));
+        candidatos.push(Candidato("Ethereum", 0));
+        candidatos.push(Candidato("Solana", 0));
+        candidatos.push(Candidato("USDC", 0));
+    }
+
+    function votar (uint256 _candidatoIndex) public {
+        
+        // CORREÇÃO 1: 'jaVotou' deve ser igualzinho ao declarado lá em cima
+        require(!jaVotou[msg.sender], "Voce ja votou!"); 
+
+        require(_candidatoIndex < candidatos.length, "Candidato invalido.");
+
+        // Atualizando os dados
+        jaVotou[msg.sender] = true;
+        candidatos[_candidatoIndex].contaVotos += 1; 
+
+        // CORREÇÃO 2: Passando os dados reais para o evento
+        emit votoComputado(msg.sender, candidatos[_candidatoIndex].nome);
+    }
+}
