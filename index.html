@@ -71,7 +71,7 @@
 
         async function loadCandidates() {
             const listaDiv = document.getElementById("candidatesList");
-            listaDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Loading date...";
+            listaDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Loading data...";
 
             try {
 
@@ -140,8 +140,8 @@
             } catch (error) {
                 console.error(error);
                 
-                if(error.message.includes("You've already voted!")) {
-                    statusDiv.innerHTML = "<span style='color:red'> You've already used your vote!</span>";
+                if(error.message.includes("You have already voted!")) {
+                    statusDiv.innerHTML = "<span style='color:red'> You have already used your vote!</span>";
                 } else {
                     statusDiv.innerHTML = "<span style='color:red'>Voting error. (See F12 console)</span>";
                 }
