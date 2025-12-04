@@ -83,7 +83,7 @@
                 let totalVotesOverall = 0; 
                 
                 for(let i = 0; i < amount; i++) {
-                    const candidate = await contract.candidate(i);
+                    const candidate = await contract.candidates(i);
                     
                     const name = candidate[0];
                     const votes = Number(candidate[1]); //converte votos para número JS
