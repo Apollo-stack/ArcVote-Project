@@ -25,7 +25,7 @@ contract ArcVote {
 
     function votar (uint256 _candidatoIndex) public {
         
-        require(!jaVotou[msg.sender], "Apenas um voto por carteira!"); 
+        require(!jaVotou[msg.sender], "Apenas um voto por carteira é aceito!"); 
 
         require(_candidatoIndex < candidatos.length, "Token invalido.");
 
