@@ -52,7 +52,9 @@
                     signer = await provider.getSigner();
                     const address = await signer.getAddress();
                     
-                    document.getElementById("connectBtn").innerText = "Connected";
+                    document.getElementById("connectBtn").style.display = "none";
+                    document.getElementById("disconnectBtn").style.display = "block";
+
                     document.getElementById("walletAddress").innerText = "Connected as: " + address.substring(0,6) + "..." + address.substring(38);
                     
                     //conecta com o contrato
@@ -66,6 +68,10 @@
             } else {
                 alert("Install MetaMask!");
             }
+        }
+
+        function disconnectWallet() {
+            window.location.reload();
         }
 
 

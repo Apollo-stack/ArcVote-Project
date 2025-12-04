@@ -98,3 +98,26 @@ h1 {
     color: #020d7f;
 }
 
+.btn-disconnect {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    display: none; /* Começa invisível */
+    transition: background 0.3s;
+}
+
+.btn-disconnect:hover { 
+    background-color: #cc0000; 
+}
+        
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
