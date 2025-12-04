@@ -10,7 +10,6 @@ contract ArcVote {
 
     Candidato[] public candidatos; 
     
-    // Atenção: A variável começa com 'j' minúsculo, mas o V é maiúsculo (padrão camelCase)
     mapping (address => bool) public jaVotou; 
 
     // Evento para avisar o site
@@ -26,7 +25,6 @@ contract ArcVote {
 
     function votar (uint256 _candidatoIndex) public {
         
-        // CORREÇÃO 1: 'jaVotou' deve ser igualzinho ao declarado lá em cima
         require(!jaVotou[msg.sender], "Apenas um voto por carteira!"); 
 
         require(_candidatoIndex < candidatos.length, "Token invalido.");
@@ -35,7 +33,7 @@ contract ArcVote {
         jaVotou[msg.sender] = true;
         candidatos[_candidatoIndex].contaVotos += 1; 
 
-        // CORREÇÃO 2: Passando os dados reais para o evento
+        // Passando os dados reais para o evento
         emit votoComputado(msg.sender, candidatos[_candidatoIndex].nome);
     }
 }
