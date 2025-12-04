@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcVote - Votação Descentralizada</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f0f2f5; text-align: center; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .btn-connect { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 20px; }
+        .btn-connect:hover { background-color: #45a049; }
+        .candidate-card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-vote { background-color: #008CBA; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .btn-vote:disabled { background-color: #ccc; cursor: not-allowed; }
+        #status { margin-top: 20px; font-weight: bold; color: #666; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 2s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; display: none;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🗳️ ArcVote System</h1>
+        <p>Vote na sua moeda favorita na rede Arc Testnet</p>
+        
+        <button id="connectBtn" class="btn-connect" onclick="conectarCarteira()">Conectar MetaMask</button>
+        <p id="walletAddress" style="font-size: 12px; color: #888;">Carteira não conectada</p>
+
+        <div id="candidatesList">
+            <p>Conecte sua carteira para ver os candidatos...</p>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        
+        // 1. SUBSTITUA ISSO PELO ENDEREÇO DO SEU CONTRATO NO REMIX
+        const CONTRACT_ADDRESS = "0x251cfEeA18c8bA9af593038a061F1f2Ede220bBa"; 
+        
+        // 2. A "Interface" do seu contrato (ABI) - Eu extraí do seu código Solidity
+        const ABI = [
+            "function votar(uint256 _candidatoIndex) public",
+            "function candidatos(uint256) view returns (string name, uint256 voteCount)",
+            "function jaVotou(address) view returns (bool)",
+            "event votoComputado(address eleitor, string nomeCandidato)"
+        ];
+
+        // Variáveis globais
+        let provider, signer, contract;
+
+        // --- FUNÇÕES ---
+
+        async function conectarCarteira() {
+            if (window.ethereum) {
+                try {
+                    // Pede permissão para acessar a MetaMask
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    
+                    // Configura a conexão (Ethers v6)
+                    provider = new ethers.BrowserProvider(window.ethereum);
+                    signer = await provider.getSigner();
+                    const address = await signer.getAddress();
+                    
+                    document.getElementById("connectBtn").innerText = "Conectado";
+                    document.getElementById("walletAddress").innerText = "Logado como: " + address.substring(0,6) + "..." + address.substring(38);
+                    
+                    // Conecta com o contrato
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+                    
+                    carregarCandidatos();
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Erro ao conectar: " + error.message);
+                }
+            } else {
+                alert("Instale a MetaMask!");
+            }
+        }
+
+        async function carregarCandidatos() {
+            const listaDiv = document.getElementById("candidatesList");
+            listaDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Carregando dados da Blockchain...";
+
+            try {
+                // Como sabemos que tem 4 candidatos fixos (0 a 3), vamos fazer um loop simples
+                // (Num app real, teríamos uma função getCandidatesCount, mas vamos simplificar)
+                let html = "";
+                
+                // Array manual com os índices que criamos no Solidity (0=BTC, 1=ETH, 2=Solana, 3=USDC)
+                for(let i = 0; i < 4; i++) {
+                    const candidato = await contract.candidatos(i);
+                    // candidato[0] é o nome, candidato[1] é os votos
+                    
+                    html += `
+                        <div class="candidate-card">
+                            <div>
+                                <strong>${candidato[0]}</strong>
+                            </div>
+                            <div>
+                                <span style="font-size: 1.2em; margin-right: 15px;">${candidato[1]} votos</span>
+                                <button class="btn-vote" onclick="votar(${i})">Votar</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                listaDiv.innerHTML = html;
+
+            } catch (error) {
+                listaDiv.innerHTML = "<p style='color:red'>Erro ao ler contrato. Você está na rede Arc Testnet?</p>";
+                console.error(error);
+            }
+        }
+
+        async function votar(index) {
+            const statusDiv = document.getElementById("status");
+            statusDiv.innerHTML = "<div class='loader' style='display:inline-block'></div> Enviando transação para a Arc... (Confirme na MetaMask)";
+            
+            try {
+                // Chama a função votar do contrato
+                const tx = await contract.votar(index);
+                
+                statusDiv.innerHTML = "⏳ Transação enviada! Aguardando confirmação da rede...";
+                
+                // Espera a transação ser minerada
+                await tx.wait();
+                
+                statusDiv.innerHTML = "<span style='color:green'>✅ Voto confirmado com sucesso!</span>";
+                
+                // Recarrega a lista para mostrar o novo voto
+                carregarCandidatos();
+
+            } catch (error) {
+                console.error(error);
+                // Tratamento de erro simples para quando o usuário já votou
+                if(error.message.includes("Voce ja votou")) {
+                    statusDiv.innerHTML = "<span style='color:red'>❌ Erro: Você já gastou seu voto!</span>";
+                } else {
+                    statusDiv.innerHTML = "<span style='color:red'>❌ Erro ao votar. (Veja o console F12)</span>";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
